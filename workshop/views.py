@@ -1,12 +1,15 @@
+import csv
 from io import BytesIO
 
 import qrcode
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db.models import Count
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .models import Scenario, Vote
+from .models import PrototypeInterest, Scenario, Vote
 
 
 SECTIONS = [
@@ -118,6 +121,8 @@ SECTIONS = [
     },
 ]
 
+FOLLOW_UP_VOTE_SESSION_KEY = "prototype_follow_up_vote_id"
+
 
 def build_nav_groups(sections):
     groups = []
@@ -189,6 +194,7 @@ def vote(request):
                 additional_comments=additional_comments[:1000],
             )
             vote.scenarios.set(selected_scenarios)
+            request.session[FOLLOW_UP_VOTE_SESSION_KEY] = vote.id
             return redirect("workshop:thanks")
 
     return render(
@@ -200,8 +206,74 @@ def vote(request):
     )
 
 
+def build_thanks_context(*, show_form=False, errors=None, form_data=None, completed=False, no_worries=False):
+    return {
+        "show_form": show_form,
+        "errors": errors or {},
+        "form_data": form_data or {},
+        "completed": completed,
+        "no_worries": no_worries,
+    }
+
+
 def thanks(request):
-    return render(request, "workshop/thanks.html")
+    vote_id = request.session.get(FOLLOW_UP_VOTE_SESSION_KEY)
+    vote = Vote.objects.filter(id=vote_id).first() if vote_id else None
+    interest = PrototypeInterest.objects.filter(vote=vote).first() if vote else None
+
+    if request.method == "POST":
+        if not vote or interest:
+            request.session.pop(FOLLOW_UP_VOTE_SESSION_KEY, None)
+            return render(request, "workshop/thanks.html", build_thanks_context(completed=True))
+
+        interested_value = request.POST.get("interested")
+        name = request.POST.get("name", "").strip()
+        email = request.POST.get("email", "").strip()
+        form_data = {
+            "interested": interested_value,
+            "name": name,
+            "email": email,
+        }
+        errors = {}
+
+        if interested_value not in {"yes", "no"}:
+            errors["interested"] = "Please choose yes or no."
+        elif interested_value == "yes":
+            if not name:
+                errors["name"] = "Please enter your name."
+            if not email:
+                errors["email"] = "Please enter your email."
+            else:
+                try:
+                    validate_email(email)
+                except ValidationError:
+                    errors["email"] = "Please enter a valid email address."
+
+        if errors:
+            return render(
+                request,
+                "workshop/thanks.html",
+                build_thanks_context(show_form=True, errors=errors, form_data=form_data),
+            )
+
+        PrototypeInterest.objects.create(
+            vote=vote,
+            interested=interested_value == "yes",
+            name=name[:120] if interested_value == "yes" else "",
+            email=email if interested_value == "yes" else "",
+        )
+        request.session.pop(FOLLOW_UP_VOTE_SESSION_KEY, None)
+        return render(
+            request,
+            "workshop/thanks.html",
+            build_thanks_context(completed=True, no_worries=interested_value == "no"),
+        )
+
+    if vote and not interest:
+        return render(request, "workshop/thanks.html", build_thanks_context(show_form=True))
+
+    request.session.pop(FOLLOW_UP_VOTE_SESSION_KEY, None)
+    return render(request, "workshop/thanks.html", build_thanks_context(completed=True, no_worries=bool(interest and not interest.interested)))
 
 
 def results(request):
@@ -220,6 +292,22 @@ def results(request):
         )
 
     return JsonResponse({"total": total, "scenarios": payload})
+
+
+def results_csv(request):
+    scenarios = Scenario.objects.annotate(vote_count=Count("votes", distinct=True)).order_by("display_order")
+    total = sum(scenario.vote_count for scenario in scenarios)
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="altmcq-results.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(["scenario", "votes", "percent"])
+    for scenario in scenarios:
+        percent = round((scenario.vote_count / total) * 100, 1) if total else 0
+        writer.writerow([scenario.title, scenario.vote_count, percent])
+
+    return response
 
 
 def qr_code(request):

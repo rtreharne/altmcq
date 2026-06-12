@@ -9,5 +9,6 @@ urlpatterns = [
     path("vote/", views.vote, name="vote"),
     path("vote/thanks/", views.thanks, name="thanks"),
     path("results.json", views.results, name="results"),
+    path("results.csv", views.results_csv, name="results_csv"),
     path("qr.png", views.qr_code, name="qr_code"),
 ]

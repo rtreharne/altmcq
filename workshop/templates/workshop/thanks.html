@@ -9,9 +9,80 @@
 </head>
 <body class="vote-page">
   <main class="vote-shell thanks">
-    <p class="eyebrow">Vote submitted</p>
-    <h1>Thanks, your response has been recorded.</h1>
-    <p>You can close this page now.</p>
+    {% if show_form %}
+      <p class="eyebrow">Vote submitted</p>
+      <h1>Thanks, your response has been recorded.</h1>
+      <p>Would you be interested in prototyping a new system I’ve built to implement the “Reward the work” and “Practice, Track, Validate” scenarios?</p>
+      <p>It uses AI to generate high-quality dynamic questions based on Canvas content.</p>
+      <form method="post" class="vote-form prototype-form">
+        {% csrf_token %}
+        <fieldset class="interest-field">
+          <legend>Would you be interested?</legend>
+          {% if errors.interested %}
+            <p class="form-error">{{ errors.interested }}</p>
+          {% endif %}
+          <div class="binary-choice">
+            <label class="choice-card">
+              <input type="radio" name="interested" value="yes" {% if form_data.interested == "yes" %}checked{% endif %}>
+              <span>
+                <strong>Yes</strong>
+                <small>I’d like to hear more and try it out.</small>
+              </span>
+            </label>
+            <label class="choice-card">
+              <input type="radio" name="interested" value="no" {% if form_data.interested == "no" %}checked{% endif %}>
+              <span>
+                <strong>No</strong>
+                <small>No worries.</small>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+        <div class="prototype-contact {% if form_data.interested != 'yes' %}is-hidden{% endif %}" data-contact-fields>
+          <label class="feedback-field">
+            <span>Name</span>
+            <input type="text" name="name" maxlength="120" value="{{ form_data.name|default:'' }}">
+            {% if errors.name %}
+              <small class="form-error">{{ errors.name }}</small>
+            {% endif %}
+          </label>
+          <label class="feedback-field">
+            <span>Email</span>
+            <input type="email" name="email" value="{{ form_data.email|default:'' }}">
+            {% if errors.email %}
+              <small class="form-error">{{ errors.email }}</small>
+            {% endif %}
+          </label>
+        </div>
+        <p class="no-worries-message {% if form_data.interested != 'no' %}is-hidden{% endif %}" data-no-worries>No worries</p>
+        <button type="submit" class="primary full-width">Submit response</button>
+      </form>
+    {% else %}
+      <p class="eyebrow">All done</p>
+      <h1>Thanks, your response has been recorded.</h1>
+      {% if no_worries %}
+        <p>No worries.</p>
+      {% endif %}
+      <p>You can close this page now.</p>
+    {% endif %}
   </main>
+  {% if show_form %}
+    <script>
+      const interestChoices = Array.from(document.querySelectorAll('input[name="interested"]'));
+      const contactFields = document.querySelector('[data-contact-fields]');
+      const noWorries = document.querySelector('[data-no-worries]');
+
+      function syncInterestFields() {
+        const selected = interestChoices.find((choice) => choice.checked)?.value;
+        const showContactFields = selected === "yes";
+        const showNoWorries = selected === "no";
+        contactFields.classList.toggle("is-hidden", !showContactFields);
+        noWorries.classList.toggle("is-hidden", !showNoWorries);
+      }
+
+      interestChoices.forEach((choice) => choice.addEventListener("change", syncInterestFields));
+      syncInterestFields();
+    </script>
+  {% endif %}
 </body>
 </html>

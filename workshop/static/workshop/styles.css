@@ -37,7 +37,25 @@ button {
   padding: 0 18px;
 }
 
+.button-link {
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  display: inline-flex;
+  font-weight: 700;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  text-decoration: none;
+}
+
 button:hover {
+  border-color: var(--accent);
+}
+
+.button-link:hover {
   border-color: var(--accent);
 }
 
@@ -487,6 +505,10 @@ h3 {
   gap: 16px;
 }
 
+.export-button {
+  justify-self: start;
+}
+
 .results-summary strong {
   display: block;
   font-size: 4rem;
@@ -617,6 +639,43 @@ legend,
   padding: 12px;
   resize: vertical;
   width: 100%;
+}
+
+.feedback-field input {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+}
+
+.prototype-form p {
+  margin: 0;
+}
+
+.binary-choice {
+  display: grid;
+  gap: 10px;
+}
+
+.interest-field,
+.prototype-contact {
+  display: grid;
+  gap: 12px;
+}
+
+.form-error {
+  color: #9f2d20;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.no-worries-message {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.is-hidden {
+  display: none;
 }
 
 .face-scale {
