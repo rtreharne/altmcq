@@ -333,7 +333,20 @@ function resetGroupTimer(section) {
 }
 
 function hasAutoTimer(section) {
-  return section && (section.mode === "discussion" || section.mode === "pass" || section.mode === "group-timer");
+  return section && (
+    section.mode === "discussion"
+    || section.mode === "pass"
+    || section.mode === "group-timer"
+    || section.mode === "vote"
+  );
+}
+
+function advancesAutomatically(section) {
+  return section && (
+    section.mode === "discussion"
+    || section.mode === "pass"
+    || section.mode === "vote"
+  );
 }
 
 function advanceGroupTimerPhase() {
@@ -425,7 +438,7 @@ function startTimer() {
     if (remaining === 0) {
       if (sections[currentStep].mode === "group-timer") {
         advanceGroupTimerPhase();
-      } else if (sections[currentStep].mode === "discussion" || sections[currentStep].mode === "pass") {
+      } else if (advancesAutomatically(sections[currentStep])) {
         advanceToNextSubsection(true);
       } else {
         stopTimer("Time");
@@ -454,7 +467,7 @@ function restoreSectionTimer(savedSectionTimer) {
   if (
     savedSectionTimer.running
     && remaining === 0
-    && (sections[currentStep].mode === "discussion" || sections[currentStep].mode === "pass")
+    && advancesAutomatically(sections[currentStep])
   ) {
     advanceToNextSubsection(true);
     return;
@@ -471,7 +484,7 @@ function restoreSectionTimer(savedSectionTimer) {
       if (remaining === 0) {
         if (sections[currentStep].mode === "group-timer") {
           advanceGroupTimerPhase();
-        } else if (sections[currentStep].mode === "discussion" || sections[currentStep].mode === "pass") {
+        } else if (advancesAutomatically(sections[currentStep])) {
           advanceToNextSubsection(true);
         } else {
           stopTimer("Time");

@@ -107,6 +107,7 @@ SECTIONS = [
         "title": "Individual Vote and Feedback",
         "subtitle": "5 min individual vote and feedback form",
         "duration": 300,
+        "mode": "vote",
     },
     {
         "key": "results",

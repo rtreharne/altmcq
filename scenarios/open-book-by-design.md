@@ -21,13 +21,17 @@ You have five minutes to prepare a one-minute pitch explaining why this approach
 
 ## Evaluation Criteria
 
-| Criterion | Key question |
-| --- | --- |
-| Learning value | Does it encourage meaningful learning? |
-| Validity | Does the mark provide credible evidence of understanding? |
-| Fairness | Is it equitable and inclusive? |
-| AI resilience | Does it remain credible when students can use AI? |
-| Practicality | Is it manageable for more than 500 students? |
+Score each criterion from 1 to 5. Scale definitions: 1 = very weak, 2 = weak, 3 = mixed, 4 = strong, 5 = very strong.
+
+| Criterion | Key question | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | :-: | :-: | :-: | :-: | :-: |
+| Learning value | Does it encourage meaningful learning? |     |     |     |     |     |
+| Validity | Does the mark provide credible evidence of understanding? |     |     |     |     |     |
+| Fairness | Is it equitable and inclusive? |     |     |     |     |     |
+| AI resilience | Does it remain credible when students can use AI? |     |     |     |     |     |
+| Practicality | Is it manageable for more than 500 students? |     |     |     |     |     |
+
+**Total score: ____ / 25**
 
 ## Round 2: Anti-Pitch Notes
 

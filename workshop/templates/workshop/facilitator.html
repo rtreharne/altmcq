@@ -15,10 +15,6 @@
   <audio id="edith-audio" src="{% static 'workshop/audio/edith.mp3' %}" preload="auto"></audio>
   <main class="stage">
     <aside class="rail" aria-label="Workshop sections">
-      <div class="brand">
-        <span>MCQ Workshop</span>
-        <strong>Facilitator</strong>
-      </div>
       <nav class="step-list">
         {% for group in nav_groups %}
           <div class="nav-group">
@@ -33,6 +29,10 @@
           </div>
         {% endfor %}
       </nav>
+      <a class="repo-url" href="https://github.com/rtreharne/altmcq" target="_blank" rel="noopener noreferrer">
+        <span>GitHub:</span>
+        <strong>github.com/rtreharne/altmcq</strong>
+      </a>
     </aside>
 
     <section class="screen" aria-live="polite">
@@ -57,9 +57,9 @@
           <div class="overview-list" data-section-block="overview">
             <h2>Aims and Objectives</h2>
             <ul>
-              <li>Evaluate alternatives to traditional MCQ assessment in the age of generative AI.</li>
+              <li>Evaluate existing and alternative MCQ assessment strategies in the age of generative AI.</li>
               <li>Test each scenario for learning value, validity, fairness, AI resilience and practicality.</li>
-              <li>Use pitch, anti-pitch and rebuttal rounds to pressure-test defensibility.</li>
+              <li>Use pitch, anti-pitch and rebuttal rounds to pressure-test scenarios.</li>
               <li>Finish with an individual vote and brief feedback.</li>
             </ul>
           </div>
@@ -96,7 +96,10 @@
           {% endfor %}
           <div class="vote-block is-hidden" data-section-block="vote">
             <img src="{% url 'workshop:qr_code' %}" alt="QR code linking to the voting form">
-            <div>
+            <div class="vote-panel">
+              <div class="section-countdown vote-section-countdown" data-section-timer="vote">05:00</div>
+              <h2>Vote for your two favourite scenarios now!</h2>
+              <p>Scan the QR code, choose two scenarios, rate your workshop experience, and add optional comments.</p>
               <h3>Vote link</h3>
               <p>{{ vote_url }}</p>
             </div>

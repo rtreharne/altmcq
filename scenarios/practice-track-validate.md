@@ -4,10 +4,11 @@ Students build a record of performance through regular practice, which is confir
 
 ## How It Works
 
-- Students complete frequent low-stakes MCQ practice throughout the module.
-- Questions are dynamically generated or selected from a large bank to reduce memorisation.
-- The system tracks engagement, topic coverage, accuracy, improvement, and consistency over time.
-- A short invigilated activity confirms that the longer-term record is credible.
+- Students build their mark through regular low-stakes MCQ practice across the module, using dynamically generated questions or a large question bank.
+- Practice is assessed in fixed two-week periods, combining accuracy, topic coverage, and completion of a capped question target to reward sustained engagement.
+- The practice record contributes 70% of the final mark, with a short invigilated validation exercise worth 30%, completed through designated bookable slots in a small computer room.
+- The practice score cannot exceed the validation score by more than 20 percentage points. Students who achieve at least 40% in validation cannot fail solely because of limited engagement, but they cannot earn a strong grade without sustained practice.
+
 
 ## Shared Assumptions
 
@@ -21,13 +22,17 @@ You have five minutes to prepare a one-minute pitch explaining why this approach
 
 ## Evaluation Criteria
 
-| Criterion | Key question |
-| --- | --- |
-| Learning value | Does it encourage meaningful learning? |
-| Validity | Does the mark provide credible evidence of understanding? |
-| Fairness | Is it equitable and inclusive? |
-| AI resilience | Does it remain credible when students can use AI? |
-| Practicality | Is it manageable for more than 500 students? |
+Score each criterion from 1 to 5. Scale definitions: 1 = very weak, 2 = weak, 3 = mixed, 4 = strong, 5 = very strong.
+
+| Criterion | Key question | 1 | 2 | 3 | 4 | 5 |
+| --- | --- | :-: | :-: | :-: | :-: | :-: |
+| Learning value | Does it encourage meaningful learning? |     |     |     |     |     |
+| Validity | Does the mark provide credible evidence of understanding? |     |     |     |     |     |
+| Fairness | Is it equitable and inclusive? |     |     |     |     |     |
+| AI resilience | Does it remain credible when students can use AI? |     |     |     |     |     |
+| Practicality | Is it manageable for more than 500 students? |     |     |     |     |     |
+
+**Total score: ____ / 25**
 
 ## Round 2: Anti-Pitch Notes
 

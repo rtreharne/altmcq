@@ -40,6 +40,21 @@ python manage.py check
 python manage.py test
 ```
 
+## Scenario Handouts
+
+Scenario Markdown files live in `scenarios/`. Each file includes a 5-criterion rubric scored from 1 to 5, for a total score out of 25.
+
+Generate printable two-page PDFs with:
+
+```bash
+source .venv/bin/activate
+python scripts/generate_scenario_pdfs.py
+```
+
+The PDFs are written to `scenario_pdfs/`.
+
+The generator creates one PDF per scenario and a consolidated `scenario_pdfs/all-scenarios.pdf` containing all scenarios.
+
 ## Docker
 
 Build and run the app as a single container:

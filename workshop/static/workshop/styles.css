@@ -77,7 +77,43 @@ button:hover {
   gap: 28px;
 }
 
-.brand span,
+.repo-url {
+  border: 1px solid rgba(216, 155, 43, 0.7);
+  border-radius: 8px;
+  color: white;
+  display: grid;
+  gap: 4px;
+  margin-top: auto;
+  padding: 10px 12px;
+  text-decoration: none;
+}
+
+.repo-url:visited,
+.repo-url:active,
+.repo-url:hover {
+  color: white;
+}
+
+.repo-url:hover {
+  background: rgba(216, 155, 43, 0.12);
+  border-color: var(--gold);
+}
+
+.repo-url span {
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.repo-url strong {
+  color: white;
+  font-size: 0.82rem;
+  font-weight: 850;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
 .eyebrow {
   color: var(--gold);
   display: block;
@@ -85,12 +121,6 @@ button:hover {
   font-weight: 800;
   letter-spacing: 0;
   text-transform: uppercase;
-}
-
-.brand strong {
-  display: block;
-  font-size: 1.35rem;
-  margin-top: 3px;
 }
 
 .step-list {
@@ -437,6 +467,19 @@ h3 {
 .vote-block p {
   color: var(--muted);
   overflow-wrap: anywhere;
+}
+
+.vote-panel {
+  display: grid;
+  gap: 10px;
+  position: relative;
+}
+
+.vote-panel h2 {
+  color: var(--ink);
+  font-size: 2.4rem;
+  line-height: 1.05;
+  margin-bottom: 0;
 }
 
 .results-block {
