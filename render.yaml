@@ -9,12 +9,8 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: SQLITE_PATH
-        value: /data/db.sqlite3
+        value: /tmp/altmcq/db.sqlite3
       - key: SECURE_SSL_REDIRECT
         value: "True"
       - key: SECURE_HSTS_SECONDS
         value: "31536000"
-    disk:
-      name: altmcq-data
-      mountPath: /data
-      sizeGB: 1
