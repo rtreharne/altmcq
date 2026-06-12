@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Django/local runtime
+db.sqlite3
+*.sqlite3
+*.log
+media/
+staticfiles/
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Test/build/cache output
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Root-level source copies; app-served copies live in workshop/static/workshop/audio/
+/edith.mp3
+/woogah.wav

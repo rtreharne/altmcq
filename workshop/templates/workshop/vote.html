@@ -1,0 +1,61 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vote | MCQ Workshop</title>
+  <link rel="stylesheet" href="{% static 'workshop/styles.css' %}">
+</head>
+<body class="vote-page">
+  <main class="vote-shell">
+    <header>
+      <p class="eyebrow">Individual vote</p>
+      <h1>Which two scenarios would you adopt?</h1>
+      <p>Select two options, rate your workshop experience, and add comments if useful.</p>
+    </header>
+    <form method="post" class="vote-form">
+      {% csrf_token %}
+      <fieldset>
+        <legend>Scenarios</legend>
+        {% for scenario in scenarios %}
+          <label class="choice-card">
+            <input type="checkbox" name="scenarios" value="{{ scenario.id }}" required>
+            <span>
+              <strong>{{ scenario.title }}</strong>
+              <small>{{ scenario.short_description }}</small>
+            </span>
+          </label>
+        {% endfor %}
+      </fieldset>
+      <fieldset class="likert-field">
+        <legend>How was your experience of the workshop?</legend>
+        <div class="face-scale">
+          <label><input type="radio" name="experience_rating" value="1" required><span>:(</span><small>Very poor</small></label>
+          <label><input type="radio" name="experience_rating" value="2"><span>:/</span><small>Poor</small></label>
+          <label><input type="radio" name="experience_rating" value="3"><span>:|</span><small>OK</small></label>
+          <label><input type="radio" name="experience_rating" value="4"><span>:)</span><small>Good</small></label>
+          <label><input type="radio" name="experience_rating" value="5"><span>:D</span><small>Excellent</small></label>
+        </div>
+      </fieldset>
+      <label class="feedback-field">
+        <span>Additional Comments</span>
+        <textarea name="additional_comments" maxlength="1000" rows="4" placeholder="Optional additional feedback"></textarea>
+      </label>
+      <button type="submit" class="primary full-width">Submit vote</button>
+    </form>
+  </main>
+  <script>
+    const scenarioChoices = Array.from(document.querySelectorAll('input[name="scenarios"]'));
+    scenarioChoices.forEach((choice) => {
+      choice.addEventListener("change", () => {
+        const selectedCount = scenarioChoices.filter((item) => item.checked).length;
+        scenarioChoices.forEach((item) => {
+          item.setCustomValidity(selectedCount === 2 ? "" : "Please select exactly two scenarios.");
+          item.disabled = selectedCount >= 2 && !item.checked;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

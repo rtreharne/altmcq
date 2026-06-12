@@ -1,0 +1,125 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rethinking MCQ Assessment</title>
+  <link rel="stylesheet" href="{% static 'workshop/styles.css' %}">
+  <script defer src="{% static 'workshop/facilitator.js' %}"></script>
+</head>
+<body class="facilitator">
+  {{ sections|json_script:"sections-data" }}
+  {{ scenario_titles|json_script:"scenario-data" }}
+  <audio id="woogah-audio" src="{% static 'workshop/audio/woogah.wav' %}" preload="auto"></audio>
+  <audio id="edith-audio" src="{% static 'workshop/audio/edith.mp3' %}" preload="auto"></audio>
+  <main class="stage">
+    <aside class="rail" aria-label="Workshop sections">
+      <div class="brand">
+        <span>MCQ Workshop</span>
+        <strong>Facilitator</strong>
+      </div>
+      <nav class="step-list">
+        {% for group in nav_groups %}
+          <div class="nav-group">
+            {% if group.items|length > 1 %}
+              <div class="nav-parent">{{ group.title }}</div>
+            {% endif %}
+            {% for item in group.items %}
+              <button class="step-button{% if group.items|length > 1 %} is-substep{% else %} is-primary-step{% endif %}" type="button" data-step="{{ item.index }}">
+                <span>{{ item.label }}</span>
+              </button>
+            {% endfor %}
+          </div>
+        {% endfor %}
+      </nav>
+    </aside>
+
+    <section class="screen" aria-live="polite">
+      <header class="screen-header">
+        <div>
+          <p class="eyebrow" id="section-label">Overview</p>
+          <h1 id="section-title">Rethinking MCQ Assessment</h1>
+          <p class="subtitle" id="section-subtitle">Facilitated by Rob Treharne and Jack Foster</p>
+        </div>
+        <div class="master-clock" aria-label="Workshop clock">
+          <button type="button" id="master-start" class="master-start">START</button>
+          <div id="master-clock-display" class="master-clock-display is-hidden">
+            <small>Workshop Clock</small>
+            <span id="master-time">45:00</span>
+            <button type="button" id="master-reset" class="master-reset">Reset</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="content-grid">
+        <section class="panel main-panel">
+          <div class="overview-list" data-section-block="overview">
+            <h2>Aims and Objectives</h2>
+            <ul>
+              <li>Evaluate alternatives to traditional MCQ assessment in the age of generative AI.</li>
+              <li>Test each scenario for learning value, validity, fairness, AI resilience and practicality.</li>
+              <li>Use pitch, anti-pitch and rebuttal rounds to pressure-test defensibility.</li>
+              <li>Finish with an individual vote and brief feedback.</li>
+            </ul>
+          </div>
+          {% for section in sections %}
+            {% if section.instruction %}
+              <div class="activity-block is-hidden" data-section-block="{{ section.key }}">
+                <p>{{ section.instruction }}</p>
+                {% if section.mode == "pass" %}
+                  <div class="section-countdown" data-section-timer="{{ section.key }}">00:30</div>
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if section.instructions %}
+              <div class="instruction-list is-hidden" data-section-block="{{ section.key }}">
+                <ul>
+                  {% for instruction in section.instructions %}
+                    <li>{{ instruction }}</li>
+                  {% endfor %}
+                </ul>
+                {% if section.mode == "discussion" %}
+                  <div class="section-countdown" data-section-timer="{{ section.key }}">05:00</div>
+                {% endif %}
+              </div>
+            {% endif %}
+            {% if section.mode == "group-timer" %}
+              <div class="group-timer is-hidden" data-section-block="{{ section.key }}">
+                <p class="group-phase">Get ready</p>
+                <h2 class="group-name">Scenario group</h2>
+                <div class="group-countdown">00:05</div>
+                <p class="group-action">{{ section.action }}</p>
+                <button type="button" class="group-next">Next</button>
+              </div>
+            {% endif %}
+          {% endfor %}
+          <div class="vote-block is-hidden" data-section-block="vote">
+            <img src="{% url 'workshop:qr_code' %}" alt="QR code linking to the voting form">
+            <div>
+              <h3>Vote link</h3>
+              <p>{{ vote_url }}</p>
+            </div>
+          </div>
+          <div class="results-block is-hidden" data-section-block="results">
+            <div class="results-summary">
+              <strong id="total-votes">0</strong>
+              <span>votes submitted</span>
+            </div>
+            <div id="results-list" class="results-list"></div>
+          </div>
+        </section>
+      </div>
+
+      <footer class="controls">
+        <button type="button" id="prev-section">Previous</button>
+        <button type="button" id="start-pause">Start</button>
+        <button type="button" id="reset-timer">Reset timer</button>
+        <button type="button" id="sound-trigger">Play sound</button>
+        <button type="button" id="edith-trigger">Edith</button>
+        <button type="button" id="next-section" class="primary">Next</button>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>
