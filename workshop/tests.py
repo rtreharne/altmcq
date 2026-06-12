@@ -1,5 +1,6 @@
 from django.urls import reverse
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 
 from .models import PrototypeInterest, Scenario, Vote
@@ -171,3 +172,39 @@ class WorkshopViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "image/png")
         self.assertTrue(response.content.startswith(b"\x89PNG"))
+
+    def test_admin_action_exports_selected_prototype_interest_to_csv(self):
+        user = get_user_model().objects.create_superuser(
+            username="admin",
+            email="admin@example.com",
+            password="password123",
+        )
+        self.client.force_login(user)
+
+        paper = Scenario.objects.get(title="Back to Paper")
+        practice = Scenario.objects.get(title="Practice, Track, Validate")
+        vote = Vote.objects.create(experience_rating=5, additional_comments="Keen to pilot this.")
+        vote.scenarios.set([paper, practice])
+        interest = PrototypeInterest.objects.create(
+            vote=vote,
+            interested=True,
+            name="Alex Example",
+            email="alex@example.com",
+        )
+
+        response = self.client.post(
+            reverse("admin:workshop_prototypeinterest_changelist"),
+            {
+                "action": "export_as_csv",
+                "_selected_action": [str(interest.id)],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/csv")
+        self.assertEqual(response["Content-Disposition"], 'attachment; filename="prototype-interest.csv"')
+        content = response.content.decode()
+        self.assertIn("interest_submitted_at,interested,name,email,vote_id,vote_submitted_at,experience_rating,selected_scenarios,additional_comments", content)
+        self.assertIn("yes,Alex Example,alex@example.com", content)
+        self.assertIn("Back to Paper; Practice, Track, Validate", content)
+        self.assertIn("Keen to pilot this.", content)
