@@ -89,6 +89,14 @@ Required production environment variables:
 - `DEBUG`: `False`.
 - `SQLITE_PATH`: `/tmp/altmcq/db.sqlite3`.
 
+Optional admin bootstrap variables:
+
+- `DJANGO_SUPERUSER_USERNAME`: admin username to create or update on each container start.
+- `DJANGO_SUPERUSER_PASSWORD`: admin password paired with the username above.
+- `DJANGO_SUPERUSER_EMAIL`: optional admin email address.
+
+If `DJANGO_SUPERUSER_USERNAME` and `DJANGO_SUPERUSER_PASSWORD` are set, the container entrypoint will automatically create the admin user on first boot and keep its password, email, and admin flags in sync on rebuilds. This is useful on Render free tier when shell access is unavailable.
+
 For persistent vote storage on Render, upgrade to a plan that supports disks and change `SQLITE_PATH` back to `/data/db.sqlite3`, then add a disk mounted at `/data`.
 
 ## Notes

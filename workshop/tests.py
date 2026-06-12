@@ -1,7 +1,9 @@
-from django.urls import reverse
+import os
 
 from django.contrib.auth import get_user_model
+from django.core.management import call_command, CommandError
 from django.test import TestCase, override_settings
+from django.urls import reverse
 
 from .models import PrototypeInterest, Scenario, Vote
 
@@ -208,3 +210,46 @@ class WorkshopViewsTests(TestCase):
         self.assertIn("yes,Alex Example,alex@example.com", content)
         self.assertIn("Back to Paper; Practice, Track, Validate", content)
         self.assertIn("Keen to pilot this.", content)
+
+    def test_ensure_admin_user_command_creates_superuser_from_env(self):
+        env = {
+            "DJANGO_SUPERUSER_USERNAME": "renderadmin",
+            "DJANGO_SUPERUSER_PASSWORD": "strong-pass-123",
+            "DJANGO_SUPERUSER_EMAIL": "renderadmin@example.com",
+        }
+        original = {key: os.environ.get(key) for key in env}
+        try:
+            os.environ.update(env)
+            call_command("ensure_admin_user")
+        finally:
+            for key, value in original.items():
+                if value is None:
+                    os.environ.pop(key, None)
+                else:
+                    os.environ[key] = value
+
+        user = get_user_model().objects.get(username="renderadmin")
+        self.assertTrue(user.is_staff)
+        self.assertTrue(user.is_superuser)
+        self.assertEqual(user.email, "renderadmin@example.com")
+        self.assertTrue(user.check_password("strong-pass-123"))
+
+    def test_ensure_admin_user_command_requires_username_and_password_together(self):
+        original_username = os.environ.get("DJANGO_SUPERUSER_USERNAME")
+        original_password = os.environ.get("DJANGO_SUPERUSER_PASSWORD")
+        os.environ["DJANGO_SUPERUSER_USERNAME"] = "renderadmin"
+        os.environ.pop("DJANGO_SUPERUSER_PASSWORD", None)
+
+        try:
+            with self.assertRaises(CommandError):
+                call_command("ensure_admin_user")
+        finally:
+            if original_username is None:
+                os.environ.pop("DJANGO_SUPERUSER_USERNAME", None)
+            else:
+                os.environ["DJANGO_SUPERUSER_USERNAME"] = original_username
+
+            if original_password is None:
+                os.environ.pop("DJANGO_SUPERUSER_PASSWORD", None)
+            else:
+                os.environ["DJANGO_SUPERUSER_PASSWORD"] = original_password
